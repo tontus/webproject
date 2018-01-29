@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Evaluation</title>
+</head>
+<body align=" center">
+{% if postFlag %}
+    <p> Score: <span>{{ formdata.answer.value }}</span></p>
+{% endif %}
+<form action="/evaluation/" method="post" class="input-form">
+    {%  csrf_token %}
+    <p>Model Answer:</p>
+    {{ form.model_answer }}
+    <p>Answer:</p>
+    {{ form.answer }}
+    <p></p>
+    <input type="submit" value="Submit"/>
+</form>
+
+<style>
+    body{
+        background-color: azure;
+        font-family: "Segoe UI";
+        padding: 10px;
+        margin-left: 20px;
+        align: center;
+    }
+</style>
+
+</body>
+</html>
