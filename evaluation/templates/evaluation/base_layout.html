@@ -4,10 +4,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Evaluation</title>
+    <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'evaluation/style.css' %}" />
 </head>
 <body>
+<div class="nav">
+    <ul class="navul">
+        <li class="navli"><a href="/">Home</a></li>
+        <li class="navli"><a href="/evaluation/log">Log</a></li>
+    </ul>
+</div>
 <div class="wrapper">
     {% block content %}
     {% endblock %}

@@ -1,14 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Log</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'evaluation/style.css' %}"/>
-</head>
-<body>
-
-
+{% extends "evaluation/base_layout.html" %}
+{% block title %} Log {% endblock %}
+{% block content %}
 <div class="divTable minimalistBlack">
     <div class="divTableHeading">
         <div class="divTableRow">
@@ -28,5 +20,4 @@
     </div>
 
 </div>
-</body>
-</html>
+{% endblock %}

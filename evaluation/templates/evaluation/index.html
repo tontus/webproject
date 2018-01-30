@@ -1,18 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Evaluation</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'evaluation/style.css' %}"/>
-</head>
-<body align=" center" class="wrapper">
-<div class="nav">
-    <ul class="navul">
-        <li class="navli"><a href="/">Home</a></li>
-        <li class="navli"><a href="/evaluation/log">Log</a></li>
-    </ul>
-</div>
+{% extends "evaluation/base_layout.html" %}
+{% block title %} Evaluation {% endblock %}
+{% block content %}
 {% if postFlag %}
     <p> Score: <span>{{ formdata }}</span></p>
 {% endif %}
@@ -30,9 +18,4 @@
     <input type="submit" value="Submit"/>
 </form>
 
-<style>
-
-</style>
-
-</body>
-</html>
+{% endblock %}
