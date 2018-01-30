@@ -1,21 +1,39 @@
 {% extends "evaluation/base_layout.html" %}
 {% block title %} Evaluation {% endblock %}
 {% block content %}
-{% if postFlag %}
-    <p> Score: <span>{{ formdata }}</span></p>
-{% endif %}
-<form action="/evaluation/" method="post" class="input-form">
-    {% csrf_token %}
-    <p>Question:</p>
-    {{ form.question }}
-    <p>Model Answer:</p>
-    {{ form.model_answer }}
-    <p>Answer:</p>
-    {{ form.answer }}
-    <p>Marks:</p>
-    {{ form.marks }}
-    <p></p>
-    <input type="submit" value="Submit"/>
-</form>
+    {% if postFlag %}
+
+        <div class="alert alert-success" role="alert">
+            <p> Score: <span>{{ formdata }}</span></p>
+        </div>
+    {% endif %}
+    <form action="/evaluation/" method="post" class="input-form">
+        <div class="form-group">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6">
+                    <p>Question:</p>
+                    {{ form.question }}
+                </div>
+                <div class="col-6">
+                    <p>Marks:</p>
+                    {{ form.marks }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <p>Model Answer:</p>
+                    {{ form.model_answer }}
+                </div>
+                <div class="col-6">
+                    <p>Answer:</p>
+                    {{ form.answer }}
+                </div>
+            </div>
+
+            <p></p>
+            <input type="submit" value="Submit"/>
+        </div>
+    </form>
 
 {% endblock %}

@@ -1,23 +1,16 @@
 {% extends "evaluation/base_layout.html" %}
 {% block title %} Log {% endblock %}
 {% block content %}
-<div class="divTable minimalistBlack">
-    <div class="divTableHeading">
-        <div class="divTableRow">
-            <div class="divTableHead">Question</div>
-            <div class="divTableHead">Answer</div>
-            <div class="divTableHead">Score</div>
+    <div class="divTableRow row" style="padding-top: 10px">
+        <div class="divTableHead col-4">Question</div>
+        <div class="divTableHead col-4">Answer</div>
+        <div class="divTableHead col-4 ri">Score</div>
+    </div>
+    {% for answerdata in answerdatas %}
+        <div class="divTableRow row">
+            <div class="divTableCell col-4">{{ answerdata.question }}</div>
+            <div class="divTableCell col-4">{{ answerdata.answer }}</div>
+            <div class="divTableCell col-4 ri">{{ answerdata.score }}</div>
         </div>
-    </div>
-    <div class="divTableBody">
-        {% for answerdata in answerdatas %}
-            <div class="divTableRow">
-                <div class="divTableCell">{{ answerdata.question }}</div>
-                <div class="divTableCell">{{ answerdata.answer }}</div>
-                <div class="divTableCell">{{ answerdata.score }}</div>
-            </div>
-        {% endfor %}
-    </div>
-
-</div>
+    {% endfor %}
 {% endblock %}
