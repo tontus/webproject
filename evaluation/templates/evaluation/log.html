@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'evaluation/style.css' %}"/>
+</head>
+<body>
+
+
+<div class="divTable minimalistBlack">
+    <div class="divTableHeading">
+        <div class="divTableRow">
+            <div class="divTableHead">Question</div>
+            <div class="divTableHead">Answer</div>
+            <div class="divTableHead">Score</div>
+        </div>
+    </div>
+    <div class="divTableBody">
+        {% for answerdata in answerdatas %}
+            <div class="divTableRow">
+                <div class="divTableCell">{{ answerdata.question }}</div>
+                <div class="divTableCell">{{ answerdata.answer }}</div>
+                <div class="divTableCell">{{ answerdata.score }}</div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+</body>
+</html>

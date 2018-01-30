@@ -1,31 +1,37 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Evaluation</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'evaluation/style.css' %}"/>
 </head>
-<body align=" center">
+<body align=" center" class="wrapper">
+<div class="nav">
+    <ul class="navul">
+        <li class="navli"><a href="/">Home</a></li>
+        <li class="navli"><a href="/evaluation/log">Log</a></li>
+    </ul>
+</div>
 {% if postFlag %}
-    <p> Score: <span>{{ formdata.answer.value }}</span></p>
+    <p> Score: <span>{{ formdata }}</span></p>
 {% endif %}
 <form action="/evaluation/" method="post" class="input-form">
-    {%  csrf_token %}
+    {% csrf_token %}
+    <p>Question:</p>
+    {{ form.question }}
     <p>Model Answer:</p>
     {{ form.model_answer }}
     <p>Answer:</p>
     {{ form.answer }}
+    <p>Marks:</p>
+    {{ form.marks }}
     <p></p>
     <input type="submit" value="Submit"/>
 </form>
 
 <style>
-    body{
-        background-color: azure;
-        font-family: "Segoe UI";
-        padding: 10px;
-        margin-left: 20px;
-        align: center;
-    }
+
 </style>
 
 </body>
