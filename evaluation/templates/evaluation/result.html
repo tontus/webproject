@@ -1,0 +1,28 @@
+{% extends "evaluation/base_layout.html" %}
+{% block title %} Result {% endblock %}
+{% block content %}
+<div class="row">
+<div class="alert alert-success col-6" role="alert">
+    <p> Score: <span>{{ formdata }}</span></p>
+</div>
+<div class = "col-6 alert alert-dark" role="alert">
+    <p>Out of: {{form.marks}}</p>
+</div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <p>Model Answer</p>
+    </div>
+    <div class="col-6">
+        <p>Answer</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <p>{{form.modelAnswer}}</p>
+    </div>
+    <div class="col-6">
+        <p>{{form.answer}}</p>
+    </div>
+</div>
+{% endblock %}

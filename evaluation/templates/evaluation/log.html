@@ -2,15 +2,19 @@
 {% block title %} Log {% endblock %}
 {% block content %}
     <div class="divTableRow row" style="padding-top: 10px">
-        <div class="divTableHead col-4">Question</div>
-        <div class="divTableHead col-4">Answer</div>
-        <div class="divTableHead col-4 ri">Score</div>
+        <div class="divTableHead col-3">Question</div>
+        <div class="divTableHead col-3">Model Answer</div>
+        <div class="divTableHead col-3">Given Answer</div>
+        <div class="divTableHead col-1">Out of</div>
+        <div class="divTableHead col-2 ri">Score</div>
     </div>
     {% for answerdata in answerdatas %}
         <div class="divTableRow row">
-            <div class="divTableCell col-4">{{ answerdata.question }}</div>
-            <div class="divTableCell col-4">{{ answerdata.answer }}</div>
-            <div class="divTableCell col-4 ri">{{ answerdata.score }}</div>
+            <div class="divTableCell col-3">{{ answerdata.question }}</div>
+            <div class="divTableCell col-3">{{ answerdata.modelAnswer }}</div>
+            <div class="divTableCell col-3">{{ answerdata.answer }}</div>
+            <div class="divTableCell col-1">{{ answerdata.marks }}</div>
+            <div class="divTableCell col-2 ri">{{ answerdata.score }}</div>
         </div>
     {% endfor %}
 {% endblock %}

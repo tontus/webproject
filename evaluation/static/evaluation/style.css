@@ -106,13 +106,15 @@ a {
 /*.divTableBody {*/
     /*display: table-row-group;*/
 /*}*/
-.col-4 {
+.divTableCell {
     border-bottom: 1px solid #dee2e6;
     border-left: 1px solid #dee2e6;
 }
 .divTableHead{
     border-top:1px solid #dee2e6;
     background-color: #4CAF50;
+    border-bottom: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
 }
 .ri{
     border-right:1px solid #dee2e6;
