@@ -7,6 +7,7 @@ import numpy as np
 import sys
 import csv
 
+
 # nltk.download()
 class Calculate:
     ALPHA = 0.2
@@ -17,6 +18,7 @@ class Calculate:
 
     brown_freqs = dict()
     N = 0
+
     def __init__(self):
         self.ALPHA = 0.2
         self.BETA = 0.45
@@ -26,12 +28,9 @@ class Calculate:
         self.brown_freqs = dict()
         self.N = 0
 
+    ######################### word similarity ##########################
 
-
-
-######################### word similarity ##########################
-
-    def get_best_synset_pair(self,word_1, word_2):
+    def get_best_synset_pair(self, word_1, word_2):
         max_sim = -1.0
         synsets_1 = wn.synsets(word_1)
         synsets_2 = wn.synsets(word_2)
@@ -42,14 +41,16 @@ class Calculate:
             best_pair = None, None
             for synset_1 in synsets_1:
                 for synset_2 in synsets_2:
+
                     sim = wn.path_similarity(synset_1, synset_2)
+                    if sim is None:
+                        sim = -999999999999
                     if sim > max_sim:
                         max_sim = sim
                         best_pair = synset_1, synset_2
             return best_pair
 
-
-    def length_dist(self,synset_1, synset_2):
+    def length_dist(self, synset_1, synset_2):
         l_dist = 10000000
         if synset_1 is None or synset_2 is None:
             return 0.0
@@ -70,8 +71,7 @@ class Calculate:
         # normalize path length to the range [0,1]
         return math.exp(-self.ALPHA * l_dist)
 
-
-    def hierarchy_dist(self,synset_1, synset_2):
+    def hierarchy_dist(self, synset_1, synset_2):
         h_dist = 10000000
         if synset_1 is None or synset_2 is None:
             return h_dist
@@ -88,10 +88,10 @@ class Calculate:
                 lcs_dists = []
                 for lcs_candidate in lcs_candidates:
                     lcs_d1 = 0
-                    if hypernyms_1.has_key(lcs_candidate):
+                    if lcs_candidate in hypernyms_1:
                         lcs_d1 = hypernyms_1[lcs_candidate]
                     lcs_d2 = 0
-                    if hypernyms_2.has_key(lcs_candidate):
+                    if lcs_candidate in hypernyms_2:
                         lcs_d2 = hypernyms_2[lcs_candidate]
                     lcs_dists.append(max([lcs_d1, lcs_d2]))
                 h_dist = max(lcs_dists)
@@ -99,7 +99,6 @@ class Calculate:
                 h_dist = 0
         return ((math.exp(self.BETA * h_dist) - math.exp(-self.BETA * h_dist)) /
                 (math.exp(self.BETA * h_dist) + math.exp(-self.BETA * h_dist)))
-
 
     def word_similarity(self, word_1, word_2):
         for syn in wn.synsets(word_1):
@@ -112,10 +111,9 @@ class Calculate:
         return (self.length_dist(synset_pair[0], synset_pair[1]) *
                 self.hierarchy_dist(synset_pair[0], synset_pair[1]))
 
-
     ######################### sentence similarity ##########################
 
-    def most_similar_word(self,word, word_set):
+    def most_similar_word(self, word, word_set):
         max_sim = -1.0
         sim_word = ""
         for ref_word in word_set:
@@ -125,24 +123,22 @@ class Calculate:
                 sim_word = ref_word
         return sim_word, max_sim
 
-
-    def info_content(self,lookup_word):
+    def info_content(self, lookup_word):
 
         if self.N == 0:
             # poor man's lazy evaluation
             for sent in brown.sents():
                 for word in sent:
                     word = word.lower()
-                    if not self.brown_freqs.has_key(word):
+                    if word not in self.brown_freqs:
                         self.brown_freqs[word] = 0
                         self.brown_freqs[word] = self.brown_freqs[word] + 1
                     self.N = self.N + 1
         lookup_word = lookup_word.lower()
-        n = 0 if not self.brown_freqs.has_key(lookup_word) else self.brown_freqs[lookup_word]
-        return 1.0 - (math.log(n + 1) / math.log(N + 1))
+        n = 0 if lookup_word not in self.brown_freqs else self.brown_freqs[lookup_word]
+        return 1.0 - (math.log(n + 1) / math.log(self.N + 1))
 
-
-    def semantic_vector(self,words, joint_words, info_content_norm):
+    def semantic_vector(self, words, joint_words, info_content_norm):
         sent_set = set(words)
         semvec = np.zeros(len(joint_words))
         i = 0
@@ -161,8 +157,7 @@ class Calculate:
             i = i + 1
         return semvec
 
-
-    def semantic_similarity(self,sentence_1, sentence_2, info_content_norm):
+    def semantic_similarity(self, sentence_1, sentence_2, info_content_norm):
         words_1 = nltk.word_tokenize(sentence_1)
         words_2 = nltk.word_tokenize(sentence_2)
 
@@ -179,10 +174,9 @@ class Calculate:
         vec_2 = self.semantic_vector(words_2, joint_words, info_content_norm)
         return np.dot(vec_1, vec_2.T) / (np.linalg.norm(vec_1) * np.linalg.norm(vec_2))
 
-
     ######################### word order similarity ##########################
 
-    def word_order_vector(self,words, joint_words, windex):
+    def word_order_vector(self, words, joint_words, windex):
         wovec = np.zeros(len(joint_words))
         i = 0
         wordset = set(words)
@@ -201,8 +195,7 @@ class Calculate:
             i = i + 1
         return wovec
 
-
-    def word_order_similarity(self,sentence_1, sentence_2):
+    def word_order_similarity(self, sentence_1, sentence_2):
         words_1 = nltk.word_tokenize(sentence_1)
         words_2 = nltk.word_tokenize(sentence_2)
         joint_words = list(set(words_1).union(set(words_2)))
@@ -221,13 +214,11 @@ class Calculate:
 
         return 1.0 - (np.linalg.norm(r1 - r2) / np.linalg.norm(r1 + r2))
 
-
     ######################### overall similarity ##########################
 
-    def similarity(self,sentence_1, sentence_2, info_content_norm):
+    def similarity(self, sentence_1, sentence_2, info_content_norm):
         return self.DELTA * self.semantic_similarity(sentence_1, sentence_2, info_content_norm) + \
                (1.0 - self.DELTA) * self.word_order_similarity(sentence_1, sentence_2)
-
 
     ######################### main / test ##########################
 
@@ -263,9 +254,9 @@ class Calculate:
         ["oracle", "sage", 0.43],
         ["serf", "slave", 0.39]
     ]
-    for word_pair in word_pairs:
-        print "%s\t%s\t%.2f\t%.2f" % (word_pair[0], word_pair[1], word_pair[2],
-                                      word_similarity(word_pair[0], word_pair[1]))
+    # for word_pair in word_pairs:
+    #     print "%s\t%s\t%.2f\t%.2f" % (word_pair[0], word_pair[1], word_pair[2],
+    #                                   word_similarity(word_pair[0], word_pair[1]))
 
     sentence_pairs = [
         ["I like that bachelor.he is cute", "I like that unmarried man. he looks good", 0.561],
@@ -288,13 +279,13 @@ class Calculate:
         ["I have a hammer.", "Take some apples.", 0.121],
         ["I love hammer.", "I hate hammer", 0.121]
     ]
-    for sent_pair in sentence_pairs:
-        sent_pair.append(similarity(sent_pair[0], sent_pair[1], False))
-        sent_pair.append(similarity(sent_pair[0], sent_pair[1], True))
-        print "%s\t%s\t%.3f\t%.3f\t%.3f" % (sent_pair[0], sent_pair[1], sent_pair[2],
-                                            similarity(sent_pair[0], sent_pair[1], False),
-                                            similarity(sent_pair[0], sent_pair[1], True))
-    
-    with open('output.csv', 'wb') as test_file:
-        file_writer = csv.writer(test_file, quoting=csv.QUOTE_ALL, quotechar=' ')
-        file_writer.writerows(sentence_pairs)
+    # for sent_pair in sentence_pairs:
+    #     sent_pair.append(similarity(sent_pair[0], sent_pair[1], False))
+    #     sent_pair.append(similarity(sent_pair[0], sent_pair[1], True))
+    #     print("%s\t%s\t%.3f\t%.3f\t%.3f" % (sent_pair[0], sent_pair[1], sent_pair[2],
+    #                                         similarity(sent_pair[0], sent_pair[1], False),
+    #                                         similarity(sent_pair[0], sent_pair[1], True)))
+
+    # with open('output.csv', 'wb') as test_file:
+    #     file_writer = csv.writer(test_file, quoting=csv.QUOTE_ALL, quotechar=' ')
+    #     file_writer.writerows(sentence_pairs)
