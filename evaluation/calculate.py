@@ -217,6 +217,7 @@ class Calculate:
     ######################### overall similarity ##########################
 
     def similarity(self, sentence_1, sentence_2, info_content_norm):
+        print(sentence_1)
         return self.DELTA * self.semantic_similarity(sentence_1, sentence_2, info_content_norm) + \
                (1.0 - self.DELTA) * self.word_order_similarity(sentence_1, sentence_2)
 

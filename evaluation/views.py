@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from .forms import AnswerInputForm
 from .models import AnswerData
 from .calculate import Calculate
+from .tasks import start_calculation
 
 
 def index(request):
@@ -16,8 +17,8 @@ def index(request):
 
 
 def log(request):
-    answerdatas = AnswerData.objects.all()
-    return render(request, 'evaluation/log.html', {'answerdatas': answerdatas})
+    answer_datas = AnswerData.objects.all()
+    return render(request, 'evaluation/log.html', {'answerdatas': answer_datas})
 
 
 # Create your views here.
@@ -48,10 +49,7 @@ def result(request):
             answerdata.modelAnswer = formdata.cleaned_data['model_answer']
             answerdata.answer = formdata.cleaned_data['answer']
             answerdata.marks = formdata.cleaned_data['marks']
-            calculate = Calculate()
-            answerdata.score = float("{0:.5f}".format(
-                calculate.similarity(answerdata.modelAnswer, answerdata.answer, True) * answerdata.marks))
-            answerdata.save()
+            start_calculation.delay(answerdata.question, answerdata.modelAnswer, answerdata.answer, answerdata.marks)
             return render(request, 'evaluation/result.html',
-                          {'formdata': answerdata.score, 'form': answerdata, 'postFlag': postFlag})
+                          {'form': answerdata, 'postFlag': postFlag})
         return HttpResponse("invalid")
